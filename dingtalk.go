@@ -8,61 +8,51 @@ import (
 	"strings"
 )
 
-type (
-	DingDing struct {
-		Config   *Config
-		Template *template.Template
-		Gitlab   *Gitlab
-		Data     interface{}
-	}
-	Config struct {
-		AccessToken string
-		Type        string
-		Title       string
-		Secret      string
-		Mobiles     string
-		Link        string
-		IsAtALL     bool
-	}
-	Gitlab struct {
-		Status      string
-		Avatar      string
-		ProjectName string
-		Branch      string
-		CiEnv       map[string]interface{}
-	}
-)
+type DingDing struct {
+	AccessToken string
+	Type        string
+	Title       string
+	Secret      string
+	Mobiles     string
+	Link        string
+	IsAtALL     bool
+	Template    *template.Template
+}
+type Config struct {
+	AccessToken string
+	Type        string
+	Title       string
+	Secret      string
+	Mobiles     string
+	Link        string
+	IsAtALL     bool
+}
 
-func (d *DingDing) Title() {
-	if d.Config.Title != "" {
-		return
-	}
-	d.Config.Title = d.Gitlab.Status + "--" + d.Gitlab.ProjectName + "--" + d.Gitlab.Branch
+func (d *DingDing) check() error {
+
+	return nil
 }
 
 func (d *DingDing) Exec() error {
-	var err error
-	if "" == d.Config.AccessToken {
-		msg := "missing DingTalk access token"
-		return errors.New(msg)
+	if e := d.check(); e != nil {
+		return e
 	}
 	mes, err := d.Template.GetMessage()
 	if err != nil {
 		return err
 	}
-	d.Title()
-	newWebHook := client.New(d.Config.AccessToken)
-	if "" != d.Config.Secret {
-		newWebHook.Secret = d.Config.Secret
+	robotClient := client.New(d.AccessToken)
+	if "" != d.Secret {
+		robotClient.Secret = d.Secret
 	}
-	mobiles := strings.Split(d.Config.Mobiles, ",")
-	switch strings.ToLower(d.Config.Type) {
+	mobiles := strings.Split(d.Mobiles, ",")
+	switch strings.ToLower(d.Type) {
 	case "markdown":
-		err = newWebHook.SendMarkdownMsg(d.Config.Title, mes, d.Config.IsAtALL, mobiles...)
+		err = robotClient.SendMarkdownMsg(d.Title, mes, d.IsAtALL, mobiles...)
 	case "text":
-		err = newWebHook.SendTextMsg(mes, d.Config.IsAtALL, mobiles...)
-	case "link":
-		err = newWebHook.SendLinkMsg(d.Gitlab.Status, mes, d.Gitlab.Avatar, d.Config.Link)
+		err = robotClient.SendTextMsg(mes, d.IsAtALL, mobiles...)
+	//case "link":
+	//	err = robotClient.SendLinkMsg(d.Gitlab.Status, mes, d.Gitlab.Avatar, d.Config.Link)
 	default:
 		msg := "not support message type"
 		err = errors.New(msg)
