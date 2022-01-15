@@ -62,7 +62,7 @@ func fileExists(filePath string) bool {
 	return true
 }
 
-func (t *EnvTemplate) getMessage() (tpl string, err error) {
+func (t *EnvTemplate) GetMessage() (tpl string, err error) {
 	tpl, err = t.getTemplate()
 	if err != nil {
 		return "", err
