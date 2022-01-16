@@ -6,8 +6,16 @@ import (
 )
 
 type GoTemplate struct {
-	Template
+	*Template
 	Data interface{}
+}
+
+func NewGoTemplate(name string, path string, data interface{}) *GoTemplate {
+	templatev := NewTemplate(name, path)
+	return &GoTemplate{
+		templatev,
+		data,
+	}
 }
 
 func (t *GoTemplate) GetMessage() (tpl string, err error) {

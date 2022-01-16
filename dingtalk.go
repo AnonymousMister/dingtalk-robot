@@ -16,7 +16,8 @@ type DingDing struct {
 	Mobiles     string
 	Link        string
 	IsAtALL     bool
-	Template    *template.Template
+	PicURL      string
+	Template    template.T
 }
 type Config struct {
 	AccessToken string
@@ -29,7 +30,6 @@ type Config struct {
 }
 
 func (d *DingDing) check() error {
-
 	return nil
 }
 
@@ -51,8 +51,8 @@ func (d *DingDing) Exec() error {
 		err = robotClient.SendMarkdownMsg(d.Title, mes, d.IsAtALL, mobiles...)
 	case "text":
 		err = robotClient.SendTextMsg(mes, d.IsAtALL, mobiles...)
-	//case "link":
-	//	err = robotClient.SendLinkMsg(d.Gitlab.Status, mes, d.Gitlab.Avatar, d.Config.Link)
+	case "link":
+		err = robotClient.SendLinkMsg(d.Title, mes, d.PicURL, d.Link)
 	default:
 		msg := "not support message type"
 		err = errors.New(msg)

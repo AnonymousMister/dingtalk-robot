@@ -3,8 +3,16 @@ package template
 import "os"
 
 type GitlabTemplate struct {
-	EnvTemplate
+	*EnvTemplate
 	GitlabEnv map[string]interface{}
+}
+
+func NewGitlabTemplate(name string, path string) *GitlabTemplate {
+	template := NewEnvTemplate(name, path, nil)
+	return &GitlabTemplate{
+		template,
+		nil,
+	}
 }
 
 func (g *GitlabTemplate) GetMessage() (tpl string, err error) {

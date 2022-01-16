@@ -8,10 +8,22 @@ import (
 	"strings"
 )
 
+type T interface {
+	GetMessage() (tpl string, err error)
+}
+
 type Template struct {
-	Type string `yaml:"type"`
 	Name string `yaml:"name"`
 	Path string `yaml:"path"`
+}
+
+func NewTemplate(name string, path string) *Template {
+
+	return &Template{
+		name,
+		path,
+	}
+
 }
 
 func (t *Template) GetMessage() (tpl string, err error) {

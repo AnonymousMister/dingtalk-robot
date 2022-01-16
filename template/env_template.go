@@ -7,10 +7,17 @@ import (
 )
 
 type EnvTemplate struct {
-	Template
+	*Template
 	Env func(string) (string, error)
 }
 
+func NewEnvTemplate(name string, path string, env func(string) (string, error)) *EnvTemplate {
+	template := NewTemplate(name, path)
+	return &EnvTemplate{
+		template,
+		env,
+	}
+}
 func (t *EnvTemplate) GetMessage() (tpl string, err error) {
 	tpl, err = t.getTemplate()
 	if err != nil {
