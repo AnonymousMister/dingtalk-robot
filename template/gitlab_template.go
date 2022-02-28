@@ -21,14 +21,16 @@ func (g *GitlabTemplate) GetMessage() (tpl string, err error) {
 		return "", err
 	}
 	g.GitlabEnv = g.initGitlabEnvs()
-	g.Env = func(s string) (string, error) {
-		if val := g.GitlabEnv[s]; val != nil {
-			return g.GitlabEnv[s].(string), nil
-		}
-		return "", nil
-	}
+	g.Env = g.exchange
 	tpl, err = g.replace(tpl)
 	return tpl, err
+}
+
+func (g *GitlabTemplate) exchange(s string) (string, error) {
+	if val := g.GitlabEnv[s]; val != nil {
+		return g.GitlabEnv[s].(string), nil
+	}
+	return "", nil
 }
 
 func (g *GitlabTemplate) initGitlabEnvs() map[string]interface{} {
